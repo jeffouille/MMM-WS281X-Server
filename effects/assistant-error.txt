@@ -1,0 +1,11 @@
+setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
+init
+do
+    blink <channel>,ffffff,000000,100,4,1,<led_count>
+    render
+    delay 500
+loop 4
+fill <channel>,ff000000
+brightness <channel>,0
+render
+reset
