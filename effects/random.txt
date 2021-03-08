@@ -1,8 +1,8 @@
-setup 1,24,0,0,255,18
+setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
 init
 do
-   rotate 1,1,2
-   random 1,0,1,RGB
+   rotate <channel>,1,2
+   random <channel>,0,<led_count>,RGB
    render
-   delay 100
+   delay 10
 loop

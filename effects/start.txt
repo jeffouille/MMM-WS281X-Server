@@ -1,11 +1,63 @@
 # channel 1 uses GPIO 1  (broadcom 18)
-setup 1,24,0,0,255,18
+#setup 1,10,0,0,255,18
+setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
 init
 
-# use white for fade
-fill 1,FFFFFF
-brightness 1,0
 
-fade 1,0,255,10,1
+rainbow <channel>,3
+#rainbow <channel>,<count>,<start_color>,<end_color>,<start>,<len>
+# <channel>     Channel to fill with a gradient/rainbow (default 1)
+# <count>       Number of times to repeat the rainbow in the channel (default 1)
+# <start_color> Color to start with value from 0-255 where 0 is red and 255 pink (default is 0)
+# <end_color>   Color to end with value from 0-255 where 0 is red and 255 pink (default 255)
+# <start>       Start at this led position
+# <len>         Number of leds to change
+
+# use white for fade
+#fill <channel>,<RRGGBB>
+#fill 1,FFFFFF
+
+#fill <channel>,0000FF
+
+#brightness <channel>,<brightness>
+
+#brightness <channel>,0
+
+#brightness 1,0
+
+#fade <channel>,<start_brightness>,<end_brightness>,<delay ms>,<step>
+#fade 1,0,255,10,1
+
+#fade <channel>,0,255,10,1
 
 render
+
+
+#do
+#	rotate 1,1,1,FF0000
+#	rotate 1,1,1,FFFF00
+#	rotate 1,1,1,00FF00
+#	rotate 1,1,1,0000FF
+#	rotate 1,1,1,FF00FF
+#loop 60
+
+
+do
+	rotate <channel>,2,0
+	#rotate <channel>,<places>,<direction>,<RRGGBB>
+	render
+	delay 10
+loop 300
+
+#rotate <channel>,<places>,<direction>,<RRGGBB>
+
+# <channel>     Channel to rotate (default 1)
+# <places>      Number of places to move each color value (default 1)
+# <direction>   Direction (0 or 1) for forward and backwards rotating (default 0)
+# <RRGGBB>      First led(s) get this color instead of the color of the last led
+
+delay 100
+fill <channel>,000000
+brightness <channel>,0
+render
+reset

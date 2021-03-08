@@ -1,8 +1,7 @@
-#24 WS2812 leds on GPIO 18 (PWM0)
-setup 1,24,0,0,255,18
+setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
 init
 rainbow
-global_brightness 1,64
+global_brightness <channel>,64
 render
 do
     do
@@ -12,7 +11,7 @@ do
     loop 30
 
     do
-       rotate 1,1,2
+       rotate <channel>,1,2
        render
        delay 100
     loop 30

@@ -10,8 +10,14 @@ Module.register('MMM-WS281X-Server',{
         useMMMFaceRecoDNN: false,
         userLoginEffect: 'login',
         userLogoutEffect: 'logout',
+        useMMMGoogleAssistant: false,
+        assistantListenEffect: 'chaser',
+        assistantErrorEffect: 'alert',
+        assistantReplyEffect: 'chaser',
+        useMMMSelfieshot: false,
+        selfieshotLaunchedEffect: 'alert',
         channel: 1,
-        led_count: 24,
+        led_count: 12,
         led_type: 0,
         invert: 0,
         global_brightness: 255,
@@ -43,6 +49,40 @@ Module.register('MMM-WS281X-Server',{
             if (this.config.useMMMFaceRecoDNN) {
                 this.sendSocketNotification('logout', this.config);
             }
+        //Notification GoogleAssistant 
+            /*
+            ASSISTANT_STANDBY
+            ASSISTANT_LISTEN
+            ASSISTANT_THINK
+            ASSISTANT_CONFIRMATION
+            ASSISTANT_REPLY
+            ASSISTANT_CONTINUE
+            ASSISTANT_HOOK
+            ASSISTANT_ERROR
+            */
+        } else if (notification === 'ASSISTANT_LISTEN') {
+            // LED effect support for MMM-GoogleAssistant Module:
+            if (this.config.useMMMGoogleAssistant) {
+                this.sendSocketNotification('googleassistant-listen', this.config);
+            }
+        } else if (notification === 'ASSISTANT_ERROR') {
+            // LED effect support for MMM-GoogleAssistant Module:
+            if (this.config.useMMMGoogleAssistant) {
+                this.sendSocketNotification('googleassistant-error', this.config);
+            }
+        } else if (notification === 'ASSISTANT_THINK' || notification === 'ASSISTANT_REPLY') {
+            // LED effect support for MMMFaceRecoDNN Module:
+            if (this.config.useMMMGoogleAssistant) {
+                this.sendSocketNotification('googleassistant-reply', this.config);
+            }
+        } else if (notification === 'SELFIE_LAUNCHED') {
+            // LED effect support for MMM-SELFISHOT Module:
+            if (this.config.useMMMSelfieshot) {
+                this.sendSocketNotification('selfie-launched', this.config);
+            }
         }
+
+
+
     }
 });

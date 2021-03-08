@@ -32,7 +32,7 @@ module.exports = NodeHelper.create({
         if (reset) {
             ledstring += 'kill_thread;reset;';
         }
-        this.setLED(initstring+ledstring)
+        this.setLED(initstring+ledstring);
     },
 
     // This function initialises the leds string
@@ -61,13 +61,22 @@ module.exports = NodeHelper.create({
     
     // Readfile to string relative to execution path
     loadRenderFile: function (filename) {
-        this.ledString = fs.readFileSync(__dirname + '/effects/' + filename + '.txt', 'utf8');
+       // this.initStrip();
+        //var initstring = 'setup ' + this.config.channel + ',' + this.config.led_count + ',' + this.config.led_type + ',' + this.config.invert + ',' + this.config.global_brightness + ',';
+       // <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
+        //loadLED
+        var content_file_ledString = fs.readFileSync(__dirname + '/effects/' + filename + '.txt', 'utf8');
+
+
+        this.ledString = content_file_ledString.replace(/<channel>/g, this.config.channel).replace(/<led_count>/g, this.config.led_count).replace(/<led_type>/g, this.config.led_type).replace(/<invert>/g, this.config.invert).replace(/<global_brightness>/g, this.config.global_brightness).replace(/<gpionum>/g, this.config.gpionum);
+            //('<channel>',<channel>)
+        console.log('[WS281X-Server] RENDERFILE'+ this.ledString);
     },
 
     // This function renders the current pixels on the connected ws281x-server process
     renderLED: function () {
         // Render string for ledstring
-        console.log(String(this.ledString));
+        //console.log(String(this.ledString));
 
         // Start socket connection
         var client = new net.Socket();
@@ -259,6 +268,17 @@ module.exports = NodeHelper.create({
             this.loadLED(this.config.userLoginEffect);
         } else if (notification === 'logout') {
             this.loadLED(this.config.userLogoutEffect);
+        //Google Assistant
+        } else if (notification === 'googleassistant-listen') {
+            this.loadLED(this.config.assistantListenEffect);
+        } else if (notification === 'googleassistant-error') {
+            this.loadLED(this.config.assistantErrorEffect);
+        } else if (notification === 'googleassistant-reply') {
+            this.loadLED(this.config.assistantReplyEffect);
+        //EDF SelefieSHOT
+        } else if (notification === 'selfie-launched') {
+        	//console.log('[WS281X-Server] this.config.selfieshotLaunchedEffect : '+ this.config.selfieshotLaunchedEffect);
+            this.loadLED(this.config.selfieshotLaunchedEffect);
         }
     },
     
