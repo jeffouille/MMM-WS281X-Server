@@ -1,12 +1,14 @@
-# channel 1 uses GPIO 1  (broadcom 18)
-setup 1,24,0,0,255,18
-init
+thread_start 1
+set_thread_exit_type 1,1
+	setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
+	init
 
-# use white for fade
-fill 1,FFFFFF
-brightness 1,0
+	# use white for fade
+	fill <channel>,FFFFFF
+	brightness <channel>,0
 
-fade 1,255,0,10,1
+	fade <channel>,255,0,10,1
 
-render
-reset
+	render
+	reset
+thread_stop

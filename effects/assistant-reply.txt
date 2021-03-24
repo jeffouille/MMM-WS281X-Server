@@ -1,27 +1,21 @@
-setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
-init
+thread_start 1
+set_thread_exit_type 1,1
+	setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
+	init
 
-#do
-#    fill <channel>,0000FF
-#    progress <channel>,1,2
-    #progress <channel>,<direction>,<delay>,<start>,<len>,<brightness_on>,<brightness_off>,<value>
-#loop 1
+	#do
+	#    fill <channel>,0000FF
+	#    progress <channel>,1,2
+	    #progress <channel>,<direction>,<delay>,<start>,<len>,<brightness_on>,<brightness_off>,<value>
+	#loop 1
 
-fill <channel>,0000FF
-#blink <channel>,<color1>,<color2>,<delay>,<blink_count>,<startled>,<len>
-blink <channel>,0000FF,00FFFF,100,10
-
-#fill <channel>,00FFFF,0,30
-#chaser <channel>,10,00FFFF,1,50,1
-#chaser <channel>,<duration>,<color>,<direction>,<count>,<delay>,<start>,<len>,<brightness>,<loops>
-#do
-#    blink <channel>,ffffff,000000,100,4,1,<led_count>
-#    render
-#    delay 500
-#loop 4
+	fill <channel>,0000FF
+	#blink <channel>,<color1>,<color2>,<delay>,<blink_count>,<startled>,<len>
+	blink <channel>,0000FF,00FFFF,1000,5
 
 
-fill <channel>,000000
-brightness <channel>,0
-render
-reset
+	fill <channel>,000000
+	brightness <channel>,0
+	render
+	reset
+thread_stop

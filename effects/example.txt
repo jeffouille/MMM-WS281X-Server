@@ -1,18 +1,21 @@
-setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
-init
-rainbow
-global_brightness <channel>,64
-render
-do
-    do
-       rotate
-       render
-       delay 100
-    loop 30
+thread_start 1
+set_thread_exit_type 1,1
+  setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
+  init
+  rainbow
+  global_brightness <channel>,64
+  render
+  do
+      do
+         rotate
+         render
+         delay 100
+      loop 30
 
-    do
-       rotate <channel>,1,2
-       render
-       delay 100
-    loop 30
-loop
+      do
+         rotate <channel>,1,2
+         render
+         delay 100
+      loop 30
+  loop
+thread_stop

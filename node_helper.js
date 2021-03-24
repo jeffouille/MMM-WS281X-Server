@@ -21,8 +21,10 @@ module.exports = NodeHelper.create({
     },
     
     // This functions sets the color of the whole LED strip
-    setStrip: function (color,reset=false) {
-        var initstring = 'setup ' + this.config.channel + ',' + this.config.led_count + ',' + this.config.led_type + ',' + this.config.invert + ',' + this.config.global_brightness + ',';
+    setStrip: function (color,reset=true) {
+    	//EDF
+    	var initstring = 'wait_thread 1;';
+        initstring += 'setup ' + this.config.channel + ',' + this.config.led_count + ',' + this.config.led_type + ',' + this.config.invert + ',' + this.config.global_brightness + ',';
         if(!this.config.spi) {
             initstring += this.config.gpionum + ';init;';
         } else {
@@ -32,15 +34,19 @@ module.exports = NodeHelper.create({
         if (reset) {
             ledstring += 'kill_thread;reset;';
         }
+        //ledstring+= 'thread_stop;'
         this.setLED(initstring+ledstring);
     },
 
     // This function initialises the leds string
-    loadLED: function (file) {
+    loadLED: function (file,backup=true) {
         // Load file to render
         this.loadRenderFile(file);
         // Render loaded ledstring
         this.renderLED()
+        if (backup) {
+           this.setStrip(this.config.color_backup,false);
+        }
     },
 
     // This function sets the color or animation string
@@ -66,11 +72,11 @@ module.exports = NodeHelper.create({
        // <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
         //loadLED
         var content_file_ledString = fs.readFileSync(__dirname + '/effects/' + filename + '.txt', 'utf8');
+        //console.log('[WS281X-Server] BACKUP FILE :'+ __dirname + '/effects/backup.csv');
 
-
-        this.ledString = content_file_ledString.replace(/<channel>/g, this.config.channel).replace(/<led_count>/g, this.config.led_count).replace(/<led_type>/g, this.config.led_type).replace(/<invert>/g, this.config.invert).replace(/<global_brightness>/g, this.config.global_brightness).replace(/<gpionum>/g, this.config.gpionum);
+        this.ledString = content_file_ledString.replace(/<channel>/g, this.config.channel).replace(/<led_count>/g, this.config.led_count).replace(/<led_type>/g, this.config.led_type).replace(/<invert>/g, this.config.invert).replace(/<global_brightness>/g, this.config.global_brightness).replace(/<gpionum>/g, this.config.gpionum);//.replace(/<filename>/g, __dirname + '/effects/backup.csv');
             //('<channel>',<channel>)
-        console.log('[WS281X-Server] RENDERFILE'+ this.ledString);
+        //console.log('[WS281X-Server] RENDERFILE\n'+ this.ledString);
     },
 
     // This function renders the current pixels on the connected ws281x-server process
@@ -153,6 +159,43 @@ module.exports = NodeHelper.create({
         if (findname != -1) {
             return hexvalues[findname];
         } else return false;
+    },
+
+    colorNamesSimple: function (name) {
+    	var language = config.language.toLowerCase();
+    	console.log('colorNamesSimple LANGUAGE : '+language);
+    	if (language === 'fr') {
+    		var namevalues = ['Noir','Argent','Gris','Blanc','Marron','Rouge','Pourpre','Fuchsia','Vert','Citron','Olive','Jaune','Bleu Marine','Bleu','Turquoise','Rose'].map(v => v.toLowerCase());
+    	} else if (language ==='it') {
+    		var namevalues = ['nero','argento','grigio','bianco','marrone','rosso','porpora','fucsia','verde','verde lime','oliva','giallo','blu navy','blu','turchese','rosa'].map(v => v.toLowerCase());
+    	} else {
+    		var namevalues = ['Black','Silver','Gray','White','Maroon','Red','Purple','Fuchsia','Green','Lime','Olive','Yellow','Navy','Blue','Aqua','Pink'].map(v => v.toLowerCase());
+    	}
+		
+        var hexvalues = ['000000','c0c0c0','808080','ffffff','800000','ff0000','800080','ff00ff','008000','00ff00','808000','ffff00','000080','0000ff','40E0D0','FF1493'];
+
+        findname = namevalues.indexOf(name.toLowerCase());
+
+        if (findname != -1) {
+            return hexvalues[findname];
+        } else return false;
+ /*   	black	#000000	
+silver	#c0c0c0	
+gray	#808080	
+white	#ffffff	
+maroon	#800000	
+red	#ff0000	
+purple	#800080	
+fuchsia	#ff00ff	
+green	#008000	
+lime	#00ff00	
+olive	#808000	
+yellow	#ffff00	
+navy	#000080	
+blue	#0000ff	
+teal	#008080	
+aqua	#00ffff	
+*/
     },
 
     rgbToHex: function (red, green, blue, alpha) {
@@ -251,6 +294,7 @@ module.exports = NodeHelper.create({
 
     // Messages from the UI
     socketNotificationReceived: function (notification, payload) {
+    	console.log(this.name + " received a socket notification: " + notification + " - Payload: " + payload);
         if (notification === 'init') {
             this.config = payload;
             
@@ -279,6 +323,33 @@ module.exports = NodeHelper.create({
         } else if (notification === 'selfie-launched') {
         	//console.log('[WS281X-Server] this.config.selfieshotLaunchedEffect : '+ this.config.selfieshotLaunchedEffect);
             this.loadLED(this.config.selfieshotLaunchedEffect);
+        //EDF ASSISTANT COLOR VOICE
+        } else if (notification === 'googleassistant-color') {
+        		this.resetLED();
+        		console.log('[WS281X-Server] googleassistant-color in nodehelper');
+        		console.log('[WS281X-Server] googleassistant-color payload.color'+payload.color); 
+				//Log.error('error');
+        	    //var reset = false;
+
+                if (payload.color){
+                    var hexcolor = this.colorNamesSimple(payload.color);
+                    var color = this.hexToRgb(hexcolor);
+                }
+                if (color){
+                	console.log('[WS281X-Server] WS281X_ASSISTANT_COLOR NOTIF'+ color);
+                	this.config.color_backup = color; //store the wanted color in config
+                    this.setStrip(color,false);
+                } else {
+                    console.log('[WS281X-Server] WS281X_ASSISTANT_COLOR NOTIF NO COLOR' );
+                }
+            console.log('[WS281X-Server] PAYLOAD:'+payload.color);
+        	//console.log('[WS281X-Server] ASSISTANT COLOR : '+ color);
+            //this.loadLED(this.config.selfieshotLaunchedEffect);
+
+
+        } else if (notification === 'googleassistant-led_off') {
+        		this.config.color_backup = '000000'
+        		this.resetLED();
         }
     },
     

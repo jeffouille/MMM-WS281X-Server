@@ -1,14 +1,17 @@
-setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
-init
-# use white for fade
-fill <channel>,FFFFFF
-brightness <channel>,0
-do
-   fade <channel>,0,255,10,1
-   #fade <channel>,<start_brightness>,<end_brightness>,<delay ms><step>,<start_led>,<len>
-   fade <channel>,255,0,10,1
-loop 4
-fill <channel>,000000
-brightness <channel>,0
-render
-reset
+thread_start 1
+set_thread_exit_type 1,1
+	setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
+	init
+	# use white for fade
+	fill <channel>,FFFFFF
+	brightness <channel>,0
+	do
+	   fade <channel>,0,255,10,1
+	   #fade <channel>,<start_brightness>,<end_brightness>,<delay ms><step>,<start_led>,<len>
+	   fade <channel>,255,0,10,1
+	loop 4
+	fill <channel>,000000
+	brightness <channel>,0
+	render
+	reset
+thread_stop

@@ -1,15 +1,18 @@
-setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
-init
+thread_start 1
+set_thread_exit_type 1,1
+	setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
+	init
 
-fill <channel>,0000FF
-fly_in <channel>
-fly_out <channel>,0
+	fill <channel>,0000FF
+	fly_in <channel>
+	fly_out <channel>,0
 
-fill <channel>,FF0080
-fly_in <channel>,0
-fly_out <channel>
+	fill <channel>,FF0080
+	fly_in <channel>,0
+	fly_out <channel>
 
-fill <channel>,000000
-brightness <channel>,0
-render
-reset
+	fill <channel>,000000
+	brightness <channel>,0
+	render
+	reset
+thread_stop

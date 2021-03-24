@@ -1,8 +1,11 @@
-setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
-init
-do
-   rotate <channel>,1,2
-   random <channel>,0,<led_count>,RGB
-   render
-   delay 10
-loop
+thread_start 1
+set_thread_exit_type 1,1
+	setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
+	init
+	do
+	   rotate <channel>,1,2
+	   random <channel>,0,<led_count>,RGB
+	   render
+	   delay 10
+	loop
+thread_stop

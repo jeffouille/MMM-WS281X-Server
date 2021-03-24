@@ -1,11 +1,24 @@
-setup 1,24,0,0,255,18
-init
+thread_start 1
+set_thread_exit_type 1,1
+	setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
+	init
 
-do
-    color_change 1,0,255,20000
-loop 5
+	do
+	    color_change <channel>,0,255,3000
+	loop 2
 
-fill 1,000000
-brightness 1,0
-render
-reset
+	fill <channel>,000000
+	brightness <channel>,0
+	render
+	reset
+
+
+	#color_change <channel>,<start_color>,<stop_color>,<duration>,<start>,<len>
+
+	# <channel>     Channel number to use
+	# <start_color> Color to start with value from 0-255 where 0 is red and 255 pink (default is 0)
+	# <stop_color>  Color to end with value from 0-255 where 0 is red and 254 pink (default is 255)
+	# <duration>    Total number of ms event should take, default is 10 seconds
+	# <start>       Start effect at this led position
+	# <len>         Number of leds to change starting at start
+thread_stop

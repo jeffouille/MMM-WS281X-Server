@@ -1,14 +1,17 @@
-setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
-init
+thread_start 1
+set_thread_exit_type 1,1
+	setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
+	init
 
-fill <channel>,000000
+	fill <channel>,000000
 
-render
-chaser <channel>,20,0000FF,1,<led_count>
-#chaser <channel>,<duration>,<color>,<direction>,<count>,<delay>,<start>,<len>,<brightness>,<loops>
+	render
+	chaser <channel>,20,0000FF,1,<led_count>
+	#chaser <channel>,<duration>,<color>,<direction>,<count>,<delay>,<start>,<len>,<brightness>,<loops>
 
-fill <channel>,000000
-brightness <channel>,0
+	fill <channel>,000000
+	brightness <channel>,0
 
-render
-reset
+	render
+	reset
+thread_stop

@@ -25,7 +25,8 @@ Module.register('MMM-WS281X-Server',{
         spi: false,
         spi_dev: '/dev/spidev0.0',
         spi_speed: 20,
-        alt_spi_pin: 10
+        alt_spi_pin: 10,
+        color_backup:'000000' // EDF backup of the color of the mirror
     },
 
     start: function() {
@@ -79,6 +80,20 @@ Module.register('MMM-WS281X-Server',{
             // LED effect support for MMM-SELFISHOT Module:
             if (this.config.useMMMSelfieshot) {
                 this.sendSocketNotification('selfie-launched', this.config);
+            }
+        } else if (notification === 'WS281X_ASSISTANT_COLOR') {
+           //Log.info('[' + this.name + '] WS281X_ASSISTANT_COLOR NOTIF RECEIVED');
+            // LED color command by Google Assistant
+            if (this.config.useMMMGoogleAssistant) {
+             //  Log.info('[' + this.name + '] WS281X_ASSISTANT_COLOR NOTIF sendSocketNotification');
+             //   Log.info('[' + this.name + '] WS281X_ASSISTANT_COLOR NOTIF payload.color:'+payload.color);
+             //   Log.info('[' + this.name + '] WS281X_ASSISTANT_COLOR NOTIF payload.message:'+payload.message);
+                this.sendSocketNotification('googleassistant-color', payload);
+            }
+        } else if (notification === 'WS281X_ASSISTANT_OFF') {
+            // LED OFF command by Google Assistant
+            if (this.config.useMMMGoogleAssistant) {
+                this.sendSocketNotification('googleassistant-led_off');
             }
         }
 

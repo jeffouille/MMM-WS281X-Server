@@ -1,22 +1,25 @@
-setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
-init
-fill <channel>,000000
-
-do
-    gradient <channel>,B,0,255
-    render
-    delay 2000
-
-    gradient <channel>,R,0,255
-    render
-    delay 2000
-
-    gradient <channel>,G,0,255
-    render
-    delay 2000
-
+thread_start 1
+set_thread_exit_type 1,1
+    setup <channel>,<led_count>,<led_type>,<invert>,<global_brightness>,<gpionum>
+    init
     fill <channel>,000000
-    render
-loop 2
 
-reset
+    do
+        gradient <channel>,B,0,255
+        render
+        delay 2000
+
+        gradient <channel>,R,0,255
+        render
+        delay 2000
+
+        gradient <channel>,G,0,255
+        render
+        delay 2000
+
+        fill <channel>,000000
+        render
+    loop 2
+
+    reset
+thread_stop
